@@ -1,0 +1,27 @@
+name: Validate Fire & Ice website
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build curated image library
+        run: bash scripts/fetch-images.sh
+      - name: Validate JavaScript syntax
+        run: |
+          for file in assets/js/*.js scripts/*.js; do
+            node --check "$file"
+          done
+      - name: Validate menu datasets
+        run: node scripts/validate-menu.js
+      - name: Validate pages and local references
+        run: python3 scripts/validate.py
