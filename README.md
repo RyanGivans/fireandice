@@ -4,13 +4,13 @@ A custom, cinematic, multi-page website for Fire & Ice Restaurant & Bar inside t
 
 ## What is included
 
-- Home — immersive brand story, custom no-people elemental hero, cinematic entry, and primary reservation journey
-- Menus — complete lunch, dinner, cocktails, wine, beer, and spirits in compact clickable accordions
-- Experiences — ice bar, elemental atmosphere, interactive presentations, and hospitality
-- Gallery — more than 50 image placements, category filtering, editorial masonry layout, and full-screen lightbox
-- Private Dining — event positioning, planning process, and email-based inquiry form
-- Our Story — brand narrative and service values
-- Visit — hours, location, directions, contact information, and reservations
+- **Home** — immersive brand story, custom no-people elemental hero, cinematic entry, and primary reservation journey
+- **Menus** — complete lunch, dinner, cocktails, wine, beer, and spirits in compact clickable accordions
+- **Experiences** — ice bar, elemental atmosphere, interactive presentations, and hospitality
+- **Gallery** — a large all-local image library with category filtering, editorial masonry layout, and full-screen lightbox
+- **Private Dining** — event positioning, planning process, and email-based inquiry form
+- **Our Story** — brand narrative and service values
+- **Visit** — hours, location, directions, contact information, and reservations
 
 ## Signature motion system
 
@@ -23,15 +23,14 @@ The Fire & Ice theme is expressed through atmosphere rather than a bright red/bl
 - an interactive Fire-to-Ice reveal section
 - restrained 3D card movement
 - reflective button sweeps
-- cinematic horizontal image rail
 - scroll-triggered transitions and parallax
-- full reduced-motion support for accessibility
+- reduced-motion support for accessibility
 
 ## Technical approach
 
 This is a dependency-free static site built with semantic HTML, modern CSS, SVG filters, Canvas, and small vanilla JavaScript modules. It does not require a paid theme, page builder, database, or runtime build step.
 
-Core photography is stored inside `assets/images`, including the custom hero composite and 12 additional editorial crops. The expanded gallery also references Fire & Ice's current official WordPress gallery images. If a remote gallery image becomes unavailable, that card automatically hides rather than displaying a broken-image box.
+All core photography used by the site is stored locally inside `assets/images`. That means the gallery, hero, and page imagery deploy directly with GitHub Pages and do not depend on outside hotlinked image URLs.
 
 ## Preview locally
 
@@ -51,18 +50,7 @@ Then open `http://localhost:8080`.
 4. Under **Build and deployment**, select **GitHub Actions**.
 5. The included `Deploy Fire & Ice to GitHub Pages` workflow publishes the checked-in site exactly as uploaded.
 
-The deployment no longer downloads the core image library during publication. This prevents the broken-image problem caused by a build step succeeding differently from the public Pages artifact.
-
-## Validation
-
-Run:
-
-```bash
-node --check assets/js/main.js
-node --check assets/js/menu.js
-node scripts/validate-menu.js
-python3 scripts/validate.py
-```
+This package intentionally includes only the Pages deployment workflow. The older development-only quality workflow was removed so it will not produce the previous GitHub Actions error.
 
 ## Production launch checklist
 
