@@ -4,7 +4,6 @@
   if (!data || !mount) return;
 
   const tabs = document.querySelector('[data-menu-tabs]');
-  const controls = document.querySelector('[data-menu-controls]');
   let active = location.hash.replace('#','');
   if (!data[active]) active = 'dinner';
 
@@ -17,9 +16,9 @@
     </article>`;
   };
 
-  const categoryMarkup = (category, index) => `
-    <section class="menu-category ${category.open ? 'open' : ''}">
-      <button class="menu-category-button" type="button" aria-expanded="${category.open ? 'true' : 'false'}">
+  const categoryMarkup = category => `
+    <section class="menu-category">
+      <button class="menu-category-button" type="button" aria-expanded="false">
         <span class="menu-category-title"><span>${category.title}</span><small>${category.note || `${category.items.length} selections`}</small></span>
         <span class="menu-plus" aria-hidden="true"></span>
       </button>
