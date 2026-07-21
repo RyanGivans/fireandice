@@ -239,3 +239,113 @@
     location.href = `mailto:info@oasisfireandice.com?subject=${subject}&body=${body}`;
   });
 })();
+
+(() => {
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Cinematic first entrance. It appears once per browser session and never blocks navigation.
+  const loader = document.querySelector('[data-loader]');
+  if (loader) {
+    let seen = false;
+    try { seen = sessionStorage.getItem('fireIceEntrance') === '1'; } catch (_) { seen = false; }
+    if (seen || reduceMotion) {
+      loader.remove();
+    } else {
+      try { sessionStorage.setItem('fireIceEntrance', '1'); } catch (_) {}
+      setTimeout(() => loader.classList.add('is-hidden'), 1450);
+      setTimeout(() => loader.remove(), 2350);
+    }
+  }
+
+  // Cursor-position ambience and subtle hero perspective.
+  if (!reduceMotion && matchMedia('(pointer:fine)').matches) {
+    const aura = document.createElement('div');
+    aura.className = 'cursor-aura';
+    aura.setAttribute('aria-hidden', 'true');
+    document.body.append(aura);
+
+    const root = document.documentElement;
+    let mx = innerWidth / 2, my = innerHeight / 2;
+    addEventListener('pointermove', event => {
+      mx = event.clientX; my = event.clientY;
+      root.style.setProperty('--cursor-x', `${mx}px`);
+      root.style.setProperty('--cursor-y', `${my}px`);
+      root.style.setProperty('--element-x', `${(mx / innerWidth) * 100}%`);
+      root.style.setProperty('--element-y', `${(my / innerHeight) * 100}%`);
+      root.style.setProperty('--hero-shift-x', `${(mx / innerWidth - .5) * -13}px`);
+      root.style.setProperty('--hero-shift-y', `${(my / innerHeight - .5) * -8}px`);
+    }, { passive: true });
+  }
+
+  // Interactive Fire/Ice reveal. Pointer on desktop, scroll-balanced on touch devices.
+  document.querySelectorAll('[data-duality]').forEach(stage => {
+    const setReveal = value => stage.style.setProperty('--duality', `${Math.max(18, Math.min(82, value))}%`);
+    if (matchMedia('(pointer:fine)').matches && !reduceMotion) {
+      stage.addEventListener('pointermove', event => {
+        const rect = stage.getBoundingClientRect();
+        setReveal(((event.clientX - rect.left) / rect.width) * 100);
+      });
+      stage.addEventListener('pointerleave', () => setReveal(52));
+    } else {
+      const update = () => {
+        const rect = stage.getBoundingClientRect();
+        const progress = 1 - Math.max(0, Math.min(1, rect.top / innerHeight));
+        setReveal(28 + progress * 44);
+      };
+      addEventListener('scroll', update, { passive: true });
+      update();
+    }
+  });
+
+  // Physical-feeling cards: maximum two degrees, intentionally restrained.
+  if (!reduceMotion && matchMedia('(pointer:fine)').matches) {
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('pointermove', event => {
+        const rect = card.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - .5;
+        const y = (event.clientY - rect.top) / rect.height - .5;
+        card.style.transform = `perspective(1000px) rotateX(${y * -2.2}deg) rotateY(${x * 2.2}deg) translateY(-2px)`;
+      });
+      card.addEventListener('pointerleave', () => {
+        card.style.transform = '';
+      });
+    });
+  }
+
+  // Remote official-gallery images fail gracefully instead of showing broken boxes.
+  document.querySelectorAll('.gallery-card img').forEach(img => {
+    const card = img.closest('.gallery-card');
+    if (!img.complete) card?.classList.add('is-loading');
+    img.addEventListener('load', () => card?.classList.remove('is-loading'), { once: true });
+    img.addEventListener('error', () => card?.classList.add('is-broken'), { once: true });
+    if (/^https?:/.test(img.getAttribute('src') || '')) {
+      setTimeout(() => {
+        if (card?.classList.contains('is-loading')) card.classList.add('is-broken');
+      }, 7000);
+    }
+  });
+
+  // Update the warm/cool page ambience as elemental sections cross the center line.
+  const zones = [...document.querySelectorAll('[data-element-zone]')];
+  if (zones.length && 'IntersectionObserver' in window) {
+    const zoneObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const zone = entry.target.dataset.elementZone;
+        document.body.dataset.element = zone;
+      });
+    }, { rootMargin: '-42% 0px -42% 0px', threshold: 0 });
+    zones.forEach(zone => zoneObserver.observe(zone));
+  }
+})();
+
+(() => {
+  const stickyReserve = document.querySelector('.mobile-reserve');
+  const hero = document.querySelector('.hero');
+  if (stickyReserve && hero && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(([entry]) => {
+      stickyReserve.classList.toggle('is-hidden', entry.isIntersecting && entry.intersectionRatio > .18);
+    }, { threshold: [0, .18, .5] });
+    observer.observe(hero);
+  }
+})();
