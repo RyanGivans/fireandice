@@ -1,0 +1,194 @@
+/* Fire & Ice — high-visibility elemental motion layer */
+
+@property --duality {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 52%;
+}
+
+.hero {
+  --warm-pulse: rgba(230, 94, 24, .34);
+  --cold-pulse: rgba(173, 226, 246, .28);
+}
+
+/* Two animated atmospheric fields that sit between the photography and copy. */
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.hero::before {
+  background:
+    radial-gradient(ellipse at 22% 78%, var(--warm-pulse), transparent 34%),
+    linear-gradient(104deg, transparent 0 20%, rgba(242, 113, 38, .2) 31%, transparent 43% 100%);
+  filter: blur(15px);
+  opacity: .76;
+  animation: fireAtmosphere 7.5s ease-in-out infinite alternate;
+}
+
+.hero::after {
+  background:
+    radial-gradient(ellipse at 84% 47%, var(--cold-pulse), transparent 31%),
+    linear-gradient(72deg, transparent 0 58%, rgba(207, 240, 252, .18) 69%, transparent 80% 100%);
+  filter: blur(11px);
+  opacity: .68;
+  animation: iceAtmosphere 9s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes fireAtmosphere {
+  0% { transform: translate3d(-4%, 5%, 0) scale(.96); opacity: .42; }
+  45% { opacity: .88; }
+  100% { transform: translate3d(10%, -4%, 0) scale(1.12); opacity: .64; }
+}
+
+@keyframes iceAtmosphere {
+  0% { transform: translate3d(4%, -3%, 0) scale(1.02); opacity: .42; }
+  50% { opacity: .82; }
+  100% { transform: translate3d(-10%, 5%, 0) scale(1.14); opacity: .7; }
+}
+
+/* Make the existing image and heat layer noticeably breathe. */
+.hero-media > .hero-image {
+  animation: wowHeroPan 16s cubic-bezier(.42,0,.2,1) infinite alternate !important;
+}
+
+.hero-media > .hero-heat-image {
+  opacity: .28 !important;
+  animation-duration: 3.8s !important;
+}
+
+@keyframes wowHeroPan {
+  0% { transform: translate3d(calc(var(--hero-shift-x) - 7px), calc(var(--hero-shift-y) + 4px), 0) scale(1.045); }
+  52% { transform: translate3d(calc(var(--hero-shift-x) + 7px), calc(var(--hero-shift-y) - 5px), 0) scale(1.085); }
+  100% { transform: translate3d(calc(var(--hero-shift-x) - 2px), calc(var(--hero-shift-y) - 9px), 0) scale(1.115); }
+}
+
+/* Stronger rolling mist and moving frost, still restrained enough for luxury. */
+.hero-fog::before,
+.hero-fog::after {
+  background: rgba(196, 226, 237, .18) !important;
+  filter: blur(34px) !important;
+  box-shadow: 0 0 90px rgba(155, 207, 228, .12);
+}
+
+.hero-fog::before { animation-duration: 9s !important; }
+.hero-fog::after { animation-duration: 13s !important; }
+
+.hero-frost::after {
+  opacity: .46 !important;
+  filter: drop-shadow(0 0 8px rgba(196, 237, 252, .5));
+  animation-duration: 7s !important;
+}
+
+/* Existing canvas particles become brighter and more visible. */
+#element-canvas {
+  opacity: 1 !important;
+  filter: brightness(1.75) saturate(1.25) drop-shadow(0 0 5px rgba(236, 135, 65, .55));
+  animation: particleFieldDrift 11s ease-in-out infinite alternate;
+}
+
+@keyframes particleFieldDrift {
+  to { transform: translate3d(1.5%, -1.2%, 0) scale(1.025); }
+}
+
+/* A moving glint across the headline and the element meter. */
+.hero .display em {
+  background-size: 220% 100% !important;
+  animation: titleElementShift 5.5s ease-in-out infinite alternate;
+}
+
+@keyframes titleElementShift {
+  from { background-position: 0% 50%; filter: drop-shadow(0 0 0 rgba(217,138,67,0)); }
+  to { background-position: 100% 50%; filter: drop-shadow(0 0 18px rgba(184, 219, 234, .16)); }
+}
+
+.hero-element-meter::before {
+  background-size: 100% 220% !important;
+  animation: meterFlow 3.4s linear infinite;
+  box-shadow: 0 0 18px rgba(198, 231, 244, .25);
+}
+
+@keyframes meterFlow { to { background-position: 0 220%; } }
+
+/* The transition between warm and cool now visibly pulses and travels. */
+.element-transition::before { animation-duration: 4.6s !important; opacity: .9; }
+.element-transition::after { animation-duration: 5.4s !important; opacity: .9; }
+.element-transition-copy b {
+  text-shadow: 0 0 24px rgba(217,138,67,.09), 0 0 30px rgba(177,221,239,.08);
+}
+
+/* The fire/ice split breathes automatically until the guest interacts with it. */
+.duality-section:not(:hover) {
+  animation: dualityBreath 7.5s ease-in-out infinite alternate;
+}
+
+@keyframes dualityBreath {
+  0% { --duality: 38%; }
+  100% { --duality: 66%; }
+}
+
+.duality-divider {
+  animation: dualityDividerPulse 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes dualityDividerPulse {
+  to { box-shadow: 0 0 44px rgba(255,255,255,.42), 0 0 95px rgba(151,213,238,.22); }
+}
+
+/* More theatrical card movement and element-specific light. */
+.experience-card img,
+.rail-shot img,
+.gallery-card img {
+  transition-duration: 1.15s !important;
+}
+
+.experience-card:hover img,
+.gallery-card:hover img {
+  transform: scale(1.075) translate3d(0,-1%,0) !important;
+}
+
+.experience-card[data-effect="fire"]:hover {
+  box-shadow: 0 28px 70px rgba(111, 36, 6, .28), inset 0 0 35px rgba(241, 97, 21, .08);
+}
+
+.experience-card[data-effect="ice"]:hover,
+.experience-card[data-effect="mist"]:hover {
+  box-shadow: 0 28px 70px rgba(41, 91, 111, .23), inset 0 0 35px rgba(190, 231, 247, .07);
+}
+
+/* Persistent elemental progress line. */
+body::after {
+  content: "";
+  position: fixed;
+  z-index: 140;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, #e56d25 16%, #efb26f 43%, #e6f5fa 61%, #8bc8df 84%, transparent);
+  background-size: 230% 100%;
+  animation: elementalTopLine 5s linear infinite;
+  opacity: .78;
+  box-shadow: 0 0 14px rgba(206, 148, 105, .28);
+}
+
+@keyframes elementalTopLine { to { background-position: 230% 0; } }
+
+@media (max-width: 760px) {
+  .hero::before { opacity: .58; }
+  .hero::after { opacity: .5; }
+  #element-canvas { filter: brightness(1.5) saturate(1.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .hero::after,
+  body::after { animation: none !important; }
+  .duality-section:not(:hover) { animation: none !important; }
+}
